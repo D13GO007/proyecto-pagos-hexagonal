@@ -7,11 +7,11 @@ export class AppController {
   @Get()
   calcular(@Query('precio') precio: string) {
 
-    //  VALIDACIONES
     const valor = parseFloat(precio);
 
+
     if (!precio) {
-      return { error: "Debe enviar un precio" };
+      return { error: "Debe ingresar un precio" };
     }
 
     if (isNaN(valor)) {
@@ -26,7 +26,7 @@ export class AppController {
       return { error: "Valor demasiado alto" };
     }
 
-    // 🟢 LÓGICA
+    
     return calcularTotal(valor);
   }
 }
