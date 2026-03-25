@@ -1,13 +1,15 @@
-import { Controller, Get, Param } from '@nestjs/common';
-import { ConfirmacionPagoService } from './confirmacion-pago.service';
+import { Controller, Get, Query } from '@nestjs/common';
+import { PagosService } from './pagos.service';
 
 @Controller('pagos')
-export class ConfirmacionPagoController {
+export class PagosController {
+  constructor(private readonly pagosService: PagosService) {}
 
-  constructor(private readonly service: ConfirmacionPagoService) {}
-
-  @Get('confirmar/:id')
-  confirmar(@Param('id') id: string) {
-    return this.service.confirmarPago(id);
+  @Get('calcular')
+  calcular(
+    @Query('precio') precio: string,
+    @Query('pais') pais: string
+  ) {
+    return this.pagosService.calcularTotal(Number(precio), pais);
   }
 }
