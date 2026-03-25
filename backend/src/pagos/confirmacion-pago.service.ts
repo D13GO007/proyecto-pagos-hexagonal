@@ -1,9 +1,17 @@
-export class ConfirmacionPagoService {
-  confirmarPago(id: string) {
+export class PagosService {
+  calcularTotal(precio: number, pais: string) {
+    let iva = 0;
+
+    if (pais === "CO") {
+      iva = precio * 0.19;
+    }
+
+    const total = precio + iva;
+
     return {
-      mensaje: "Pago confirmado",
-      id: id,
-      estado: "aprobado"
+      precioBase: precio,
+      iva: iva,
+      total: total
     };
   }
 }
