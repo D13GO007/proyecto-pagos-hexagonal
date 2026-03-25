@@ -1,10 +1,11 @@
+// backend/src/app.module.ts
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-
+import { PagoController } from './infrastructure/adapters/inbound/pago.controller';
+import { ProcesarPagoUseCase } from './application/procesar-pago.usecase';
 
 @Module({
   imports: [],
-  controllers: [AppController],
-  providers: [],
+  controllers: [PagoController],
+  providers: [ProcesarPagoUseCase],
 })
 export class AppModule {}
