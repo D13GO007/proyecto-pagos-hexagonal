@@ -27,6 +27,6 @@ export class AppController {
     }
 
     
-    return calcularTotal(valor);
+    return calcularTotal(valor, "cali");
   }
 }

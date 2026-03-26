@@ -2,6 +2,25 @@
 
 import { useState } from "react";
 
+/* =========================
+LÓGICA (TU APORTE)
+========================= */
+
+function calcularTotal(precio: number, ubicacion: string) {
+const IVA_RATE = 0.19;
+
+const iva = precio * IVA_RATE;
+
+let envio = 0;
+if (ubicacion === "cali") envio = 10000;
+else if (ubicacion === "bogota") envio = 15000;
+else envio = 20000;
+
+const total = precio + iva + envio;
+
+return { precio, iva, envio, total };
+}
+
 export default function PasarelaPagoRealista() {
   const [metodo, setMetodo] = useState("tarjeta");
   const [paso, setPaso] = useState(1); // 1: Formulario, 2: Procesando, 3: Éxito/Ticket
@@ -14,6 +33,13 @@ export default function PasarelaPagoRealista() {
   const [guardarTarjeta, setGuardarTarjeta] = useState(false);
 
   const bancosColombia = ["Bancolombia", "Banco de Bogotá", "Davivienda", "BBVA", "Banco de Occidente", "Caja Social"];
+
+/* =========================
+LÓGICA INTEGRADA
+========================= */
+const precioBase = 150000;
+const ubicacion = "cali";
+const resumen = calcularTotal(precioBase, ubicacion);
 
   const simularPago = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -32,7 +58,7 @@ export default function PasarelaPagoRealista() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           metodo: metodo,
-          monto: 162500, // El monto que definimos en el resumen
+          monto: resumen.total, // El monto que definimos en el resumen
           guardarMetodo: guardarTarjeta, // <-- AQUÍ ENVIAMOS LA DECISIÓN
           detalles: 
             metodo === "tarjeta" ? datosTarjeta : 
@@ -65,11 +91,15 @@ export default function PasarelaPagoRealista() {
         <div className="w-full md:w-1/3 bg-white p-6 rounded-xl shadow-sm border border-gray-200 h-fit">
           <h2 className="text-lg font-bold text-gray-800 border-b pb-4 mb-4">Resumen de Compra</h2>
           <div className="space-y-3 text-sm text-gray-600">
-            <div className="flex justify-between"><span>Subtotal:</span> <span>$150,000</span></div>
-            <div className="flex justify-between"><span>Envío:</span> <span>$12,500</span></div>
+            <div className="flex justify-between"><span>Subtotal:</span> <span>${resumen.precio.toLocaleString()}</span></div>
+            <div className="flex justify-between"><span>Envío:</span> <span>${resumen.envio.toLocaleString()}</span></div>
+            <div className="flex justify-between">
+              <span>IVA (19%):</span>
+              <span>${resumen.iva.toLocaleString()}</span>
+              </div>
             <div className="flex justify-between text-green-600"><span>Descuento:</span> <span>-$0</span></div>
             <div className="flex justify-between font-bold text-lg text-gray-900 border-t pt-3 mt-3">
-              <span>Total a pagar:</span> <span>$162,500</span>
+              <span>Total a pagar:</span> <span>${resumen.total.toLocaleString()}</span>
             </div>
           </div>
         </div>
@@ -274,7 +304,7 @@ export default function PasarelaPagoRealista() {
                   <div className="bg-gray-50 p-4 rounded-lg text-left text-sm text-gray-600 inline-block">
                     <p><strong>Referencia:</strong> TX-{Math.floor(Math.random() * 1000000)}</p>
                     <p><strong>Método:</strong> {metodo.toUpperCase()}</p>
-                    <p><strong>Total pagado:</strong> $162,500</p>
+                    <p><strong>Total pagado:</strong> ${resumen.total.toLocaleString()}</p>
                   </div>
                 </>
               )}
