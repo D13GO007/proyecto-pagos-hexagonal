@@ -1,6 +1,6 @@
-// backend/src/application/procesar-pago.usecase.ts
 import { Injectable, BadRequestException } from '@nestjs/common';
 import { DatosPago } from '../domain/pago.interface';
+import { calcularTotal } from './calcular-impuesto.usecase';
 
 @Injectable()
 export class ProcesarPagoUseCase {
@@ -9,30 +9,40 @@ export class ProcesarPagoUseCase {
       throw new BadRequestException('El método de pago es obligatorio.');
     }
 
-  let metodoSeguroGuardado: any = null;
+    // INTEGRAMOS HUO18
+    const resultadoFinanciero = calcularTotal(
+      datos.monto,
+      datos.detalles?.ubicacion || "local"
+    );
 
-    // SIMULACIÓN DE TOKENIZACIÓN (PCI-DSS)
-    // Si el usuario pagó con tarjeta y marcó la casilla de guardar:
+    let metodoSeguroGuardado: any = null;
+
+    // (igual que antes)
     if (datos.metodo === 'tarjeta' && datos.guardarMetodo) {
-      const numeroTarjeta = datos.detalles.numero.replace(/\s+/g, ''); // Quitamos espacios
-      const ultimos4 = numeroTarjeta.slice(-4); // Sacamos los últimos 4 números
-      
-      // Creamos la bóveda segura que se guardaría en la base de datos
+      const numeroTarjeta = datos.detalles.numero.replace(/\s+/g, '');
+      const ultimos4 = numeroTarjeta.slice(-4);
+
       metodoSeguroGuardado = {
-        token: `tok_${Math.random().toString(36).substring(2, 15)}`, // Token seguro
+        token: `tok_${Math.random().toString(36).substring(2, 15)}`,
         tarjetaEnmascarada: `**** **** **** ${ultimos4}`,
         mensaje: 'Tarjeta guardada de forma segura para futuras compras'
       };
-      
-      console.log('🔒 Bóveda de Seguridad: Tarjeta tokenizada exitosamente.', metodoSeguroGuardado);
+
+      console.log('🔒 Tarjeta tokenizada:', metodoSeguroGuardado);
     }
 
-    // Simulamos que el banco aprobó la transacción de hoy
     return {
       exito: true,
-      mensaje: 'Pago registrado con éxito',
+      mensaje: 'Pago procesado correctamente',
+
+      
       transaccionId: `TX-${Math.floor(Math.random() * 1000000)}`,
-      datosGuardados: metodoSeguroGuardado // Devolvemos el token al frontend
+
+      //  APORTE
+      detallePago: resultadoFinanciero,
+
+      // seguridad
+      datosGuardados: metodoSeguroGuardado
     };
   }
 }
