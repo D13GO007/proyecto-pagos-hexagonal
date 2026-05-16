@@ -12,6 +12,13 @@ export interface RespuestaTransaccion {
   idTransaccionBanco?: string;
 }
 
+export interface EstadoTransaccionWompi {
+  aprobado: boolean;
+  estado: string;
+  motivoRechazo?: string;
+}
+
 export interface IPasarelaPagoPort {
   procesarPago(metodo: string, detalles: any, monto: number): Promise<RespuestaTransaccion>;
+  consultarTransaccion?(wompiTxId: string): Promise<EstadoTransaccionWompi>;
 }

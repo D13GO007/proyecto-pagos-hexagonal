@@ -6,10 +6,11 @@ import { Module } from '@nestjs/common';
 import { PagoController } from './infrastructure/adapters/inbound/pago.controller';
 import { CuponController } from './infrastructure/adapters/inbound/cupon.controller';
 import { DevolucionController } from './infrastructure/adapters/inbound/devolucion.controller';
+import { PedidoController } from './infrastructure/adapters/inbound/pedido.controller';
 import { ProcesarPagoUseCase } from './application/procesar-pago.usecase';
 import { GestionarCuponUseCase } from './application/gestionar-cupon.usecase';
 import { PedidosMockAdapter } from './infrastructure/adapters/outbound/pedidos-mock.adapter';
-import { SandboxMercadoPagoAdapter } from './infrastructure/adapters/outbound/sandbox-mercadopago.adapter';
+import { WompiAdapter } from './infrastructure/adapters/outbound/wompi.adapter';
 import { CuponesMockAdapter } from './infrastructure/adapters/outbound/cupones-mock.adapter';
 import { EmailService } from './infrastructure/adapters/outbound/email.service';
 import { PEDIDOS_REPOSITORY_PORT } from './domain/puertos/pedidos-repository.port';
@@ -19,7 +20,7 @@ import { CUPON_REPOSITORY_PORT } from './domain/puertos/cupon-repository.port';
 
 @Module({
   imports: [],
-  controllers: [PagoController, CuponController, DevolucionController],
+  controllers: [PagoController, CuponController, DevolucionController, PedidoController],
   providers: [
     // Puerto de entrada: caso de uso de pago
     {
@@ -33,10 +34,10 @@ import { CUPON_REPOSITORY_PORT } from './domain/puertos/cupon-repository.port';
       useClass: PedidosMockAdapter,
     },
 
-    // Adaptador de salida: pasarela de pago (Mercado Pago Sandbox)
+    // Adaptador de salida: pasarela de pago (Wompi Sandbox)
     {
       provide: PASARELA_PAGO_PORT,
-      useClass: SandboxMercadoPagoAdapter,
+      useClass: WompiAdapter,
     },
 
     // Adaptador de salida: repositorio de cupones en memoria

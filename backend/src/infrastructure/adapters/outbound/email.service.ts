@@ -24,6 +24,51 @@ export interface DatosCambioEstado {
   emailComprador: string;
 }
 
+export interface SolicitudDevolucionPayload {
+  id: string;
+  facturaId: string;
+  pedidoId: string;
+  emailComprador: string;
+  tipo: 'ANULACION' | 'DEVOLUCION';
+  motivo: string;
+  monto?: number;
+  descripcion?: string;
+}
+
+export interface ResolverSolicitudPayload {
+  facturaId: string;
+  pedidoId: string;
+  emailComprador: string;
+  tipo: 'ANULACION' | 'DEVOLUCION';
+  decision: 'APROBADA' | 'RECHAZADA';
+  motivo: string;
+  motivoRechazo?: string;
+  monto?: number;
+}
+
+export interface EscalarSolicitudPayload {
+  solicitudId: string;
+  facturaId: string;
+  pedidoId: string;
+  emailComprador: string;
+  tipo: 'ANULACION' | 'DEVOLUCION';
+  motivo: string;
+  motivoRechazo?: string;
+  reclamacion?: string;
+  monto?: number;
+}
+
+export interface AdminDecisionPayload {
+  facturaId: string;
+  pedidoId: string;
+  emailComprador: string;
+  tipo: 'ANULACION' | 'DEVOLUCION';
+  decision: 'APROBADA' | 'RECHAZADA';
+  adminMotivo?: string;
+  monto?: number;
+  motivo?: string;
+}
+
 const NAVY  = '#1a3a5c';
 const BLUE  = '#2563eb';
 const WHITE = '#ffffff';
@@ -306,7 +351,7 @@ export class EmailService {
   }
 
   // ── Nueva solicitud de devolución → notificar vendedor ──────────────────────
-  async enviarSolicitudVendedor(s: any): Promise<void> {
+  async enviarSolicitudVendedor(s: SolicitudDevolucionPayload): Promise<void> {
     const tipoLabel = s.tipo === 'ANULACION' ? 'Anulacion' : 'Devolucion';
     const fecha = new Date().toLocaleString('es-CO', { timeZone: 'America/Bogota' });
 
@@ -349,7 +394,7 @@ export class EmailService {
   }
 
   // ── Resolución (aprobada/rechazada) → notificar cliente ──────────────────────
-  async enviarResolucionCliente(r: any): Promise<void> {
+  async enviarResolucionCliente(r: ResolverSolicitudPayload): Promise<void> {
     const aprobada   = r.decision === 'APROBADA';
     const tipoLabel  = r.tipo === 'ANULACION' ? 'anulacion' : 'devolucion';
     const colorBadge = aprobada ? '#16a34a' : '#dc2626';
@@ -403,7 +448,7 @@ export class EmailService {
   }
 
   // ── Reclamacion escalada al admin ───────────────────────────────────────────
-  async enviarEscalacionAdmin(r: any): Promise<void> {
+  async enviarEscalacionAdmin(r: EscalarSolicitudPayload): Promise<void> {
     const tipoLabel = r.tipo === 'ANULACION' ? 'Anulacion' : 'Devolucion';
     const fecha = new Date().toLocaleString('es-CO', { timeZone: 'America/Bogota' });
 
@@ -453,7 +498,7 @@ export class EmailService {
   }
 
   // ── Decision final del admin → notificar a comprador y vendedor ─────────────
-  async enviarDecisionAdmin(r: any): Promise<void> {
+  async enviarDecisionAdmin(r: AdminDecisionPayload): Promise<void> {
     const aprobada  = r.decision === 'APROBADA';
     const tipoLabel = r.tipo === 'ANULACION' ? 'anulacion' : 'devolucion';
     const color     = aprobada ? '#16a34a' : '#dc2626';

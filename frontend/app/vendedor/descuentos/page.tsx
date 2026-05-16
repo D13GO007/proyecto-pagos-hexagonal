@@ -116,12 +116,12 @@ export default function ConfigDescuentos() {
 
               <div>
                 <label className={labelCls}>Tipo de descuento</label>
-                <div className="flex gap-2">
-                  <select value={tipoValor} onChange={(e) => setTipoValor(e.target.value as "porcentaje" | "monto")} className={inputCls + " flex-shrink-0 w-40"}>
+                <div className="grid grid-cols-[10rem_minmax(0,1fr)] gap-2 min-w-0">
+                  <select value={tipoValor} onChange={(e) => setTipoValor(e.target.value as "porcentaje" | "monto")} className={inputCls + " w-full"}>
                     <option value="porcentaje" className="text-slate-900">% Porcentaje</option>
                     <option value="monto" className="text-slate-900">$ Monto fijo</option>
                   </select>
-                  <input value={valor} onChange={(e) => setValor(e.target.value)} type="number" min="0" required placeholder={tipoValor === "porcentaje" ? "10" : "5000"} className={inputCls} />
+                  <input value={valor} onChange={(e) => setValor(e.target.value)} type="number" min="0" required placeholder={tipoValor === "porcentaje" ? "10" : "5000"} className={inputCls + " min-w-0 w-full"} />
                 </div>
                 {tipoValor === "porcentaje" && parseFloat(valor) > 100 && (
                   <p className="text-xs text-rose-600 mt-1">El porcentaje no puede superar el 100%</p>

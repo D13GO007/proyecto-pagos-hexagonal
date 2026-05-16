@@ -1,0 +1,42 @@
+====================================================================
+  RUTAS DE PÁGINAS — Frontend Next.js
+====================================================================
+El header (navbar) estaba definido en el layout global y se aplicaba
+automáticamente a todas las páginas listadas abajo.
+
+--------------------------------------------------------------------
+ARCHIVO DEL LAYOUT (donde estaba el header)
+--------------------------------------------------------------------
+frontend/app/layout.tsx
+
+--------------------------------------------------------------------
+PÁGINAS QUE HEREDABAN EL HEADER
+--------------------------------------------------------------------
+Ruta URL                   Archivo fuente
+-----------                ----------------------------------------
+/                          frontend/app/page.tsx
+/pago                      frontend/app/pago/page.tsx
+/cliente/facturas          frontend/app/cliente/facturas/page.tsx
+/vendedor/historial        frontend/app/vendedor/historial/page.tsx
+/vendedor/descuentos       frontend/app/vendedor/descuentos/page.tsx
+/vendedor/cupones          frontend/app/vendedor/cupones/page.tsx
+/vendedor/devoluciones     frontend/app/vendedor/devoluciones/page.tsx
+/admin/reclamaciones       frontend/app/admin/reclamaciones/page.tsx
+
+--------------------------------------------------------------------
+ENLACES QUE TENÍA EL HEADER (para referencia)
+--------------------------------------------------------------------
+Sección COMPRADOR:
+  /pago               → Checkout
+  /cliente/facturas   → Facturas
+
+Sección VENDEDOR:
+  /vendedor/historial    → Historial
+  /vendedor/descuentos   → Descuentos
+  /vendedor/cupones      → Cupones
+  /vendedor/devoluciones → Devoluciones
+
+Sección ADMIN:
+  /admin/reclamaciones → Admin
+
+====================================================================
