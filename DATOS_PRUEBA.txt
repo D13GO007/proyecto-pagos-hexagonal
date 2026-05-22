@@ -1,0 +1,105 @@
+====================================================================
+  DATOS DE PRUEBA — Plataforma de Pagos (Wompi Sandbox)
+====================================================================
+
+IMPORTANTE: Estos datos solo funcionan en el entorno sandbox de Wompi.
+Las llaves de produccion son diferentes y se obtienen en el panel oficial.
+
+--------------------------------------------------------------------
+TARJETA DE CREDITO / DEBITO
+--------------------------------------------------------------------
+Numero:      4242 4242 4242 4242   (aprobada)
+CVV:         123
+Vencimiento: 12/27
+Titular:     Cualquier nombre (ej: JUAN PEREZ)
+
+Numero:      4111 1111 1111 1112   (declinada — para probar rechazo)
+CVV:         123
+Vencimiento: 12/27
+
+Cuotas:      1, 6, 12 o 24 — todas funcionan en sandbox.
+
+--------------------------------------------------------------------
+NEQUI
+--------------------------------------------------------------------
+Numero de prueba:  3991111111  →  transaccion APROBADA automaticamente
+Numero de prueba:  3991111112  →  transaccion DECLINADA
+
+El pago es asincrono: Wompi crea la transaccion y el frontend
+verifica el estado cada 3 segundos de forma automatica (maximo 1 minuto).
+En produccion, el usuario recibe una notificacion push en su app Nequi.
+
+--------------------------------------------------------------------
+PSE
+--------------------------------------------------------------------
+Banco:        Cualquiera del selector (Bancolombia, Davivienda, etc.)
+Documento:    Cualquier numero de cedula o NIT valido
+Tipo persona: Natural o Juridica
+
+En sandbox, Wompi redirige al portal del banco simulado.
+El estado se verifica automaticamente cada 3 segundos.
+
+--------------------------------------------------------------------
+CUPONES DE DESCUENTO
+--------------------------------------------------------------------
+BIENVENIDO10  →  10% de descuento (monto minimo: consultar backend)
+DESC20MIL     →  $20.000 COP fijo (monto minimo: consultar backend)
+
+Los cupones los crea el vendedor desde: /vendedor/cupones
+Cada cupon tiene limite de usos y fecha de expiracion configurables.
+
+--------------------------------------------------------------------
+PEDIDOS DE PRUEBA (hardcodeados en el frontend)
+--------------------------------------------------------------------
+PED-101  Laptop Pro X       $150.000  Electronica
+PED-102  Monitor 4K         $300.000  Electronica   ← activo en checkout
+PED-103  Audifonos BT       $850.000  Accesorios
+PED-104  Mouse Inalambrico  $ 50.000  Perifericos
+PED-456  Teclado Mecanico   $ 80.000  Perifericos
+PED-789  Monitor 4K         $200.000  Electronica
+PED-CAN  Laptop Pro X       $120.000  Electronica   (pedido cancelado)
+
+Para cambiar el pedido activo: editar ID_ACTUAL en frontend/app/pago/page.tsx
+
+--------------------------------------------------------------------
+TARIFAS DE ENVIO
+--------------------------------------------------------------------
+Cali      → Gratis ($0)
+Bogota    → $15.000 COP
+Medellin  → $12.000 COP
+Otra      → $20.000 COP
+
+--------------------------------------------------------------------
+TASAS DE IVA
+--------------------------------------------------------------------
+General   → 19%  (electronica, ropa, etc.)
+Reducido  →  5%  (alimentos, libros, etc.)
+Exento    →  0%  (medicamentos, educacion, etc.)
+
+--------------------------------------------------------------------
+LLAVES WOMPI SANDBOX (backend/.env)
+--------------------------------------------------------------------
+WOMPI_PUBLIC_KEY       = pub_test_opquRdkSk8VKEZTMoTIzfN2Nm843EfT0
+WOMPI_PRIVATE_KEY      = prv_test_CJUEaW6ReGg4gSg2VXOEWFvSGzvC6Smo
+WOMPI_INTEGRITY_SECRET = test_integrity_MTNMtHU5m6ow49cLtzBNc06vjDzK50Sj
+
+La firma de integridad se calcula como:
+  SHA256(referencia + monto_en_centavos + "COP" + WOMPI_INTEGRITY_SECRET)
+
+Los montos se envian en centavos: $300.000 COP = 30.000.000 centavos
+
+--------------------------------------------------------------------
+CORREOS DE NOTIFICACION (backend/.env)
+--------------------------------------------------------------------
+EMAIL_USER      = diegoandresrm43210@gmail.com   (remitente SMTP)
+EMAIL_PASS      = [contrasena de aplicacion Google]
+EMAIL_COMPRADOR = diegoandresrm43210@gmail.com
+EMAIL_VENDEDOR  = diegoandresr43210@gmail.com
+
+--------------------------------------------------------------------
+PUERTOS
+--------------------------------------------------------------------
+Backend  (NestJS)  : http://localhost:4000
+Frontend (Next.js) : http://localhost:3000
+
+====================================================================

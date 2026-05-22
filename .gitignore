@@ -1,7 +1,17 @@
 node_modules/
 dist/
 .env
+.env.local
 .next/
 out/
 build/
 .DS_Store
+
+# Claude Code
+.claude/
+
+# Archivos de otros módulos descargados localmente
+Sistema_D_Compra-main/
+
+# Archivos generados
+repomix-output.xml
