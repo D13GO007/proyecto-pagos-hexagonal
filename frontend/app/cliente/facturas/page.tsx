@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { BACKEND_URL } from "@/lib/config";
 import {
   obtenerFacturas, type Factura,
   guardarSolicitud, obtenerSolicitudPorFactura, actualizarSolicitud, type SolicitudDevolucion,
@@ -85,7 +86,7 @@ export default function MisFacturas() {
     };
 
     guardarSolicitud(solicitud);
-    fetch("http://localhost:4000/devoluciones", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(solicitud) }).catch(() => {});
+    fetch("${BACKEND_URL}/devoluciones", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(solicitud) }).catch(() => {});
 
     setModal(null);
     setExito(`Solicitud de ${modal.tipo === "ANULACION" ? "anulacion" : "devolucion"} enviada. El vendedor la revisara y recibiras una respuesta por correo.`);
@@ -98,7 +99,7 @@ export default function MisFacturas() {
     setModalEscalacion((m) => m ? { ...m, enviando: true } : null);
     const s = modalEscalacion.solicitud;
     actualizarSolicitud(s.id, { estado: "RECLAMADA", reclamacion: modalEscalacion.reclamacion.trim(), fechaReclamacion: new Date().toISOString() });
-    fetch("http://localhost:4000/devoluciones/escalar", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ solicitudId: s.id, facturaId: s.facturaId, pedidoId: s.pedidoId, emailComprador: s.emailComprador, monto: s.monto, tipo: s.tipo, motivo: s.motivo, motivoRechazo: s.motivoRechazo, reclamacion: modalEscalacion.reclamacion.trim() }) }).catch(() => {});
+    fetch("${BACKEND_URL}/devoluciones/escalar", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ solicitudId: s.id, facturaId: s.facturaId, pedidoId: s.pedidoId, emailComprador: s.emailComprador, monto: s.monto, tipo: s.tipo, motivo: s.motivo, motivoRechazo: s.motivoRechazo, reclamacion: modalEscalacion.reclamacion.trim() }) }).catch(() => {});
     setModalEscalacion(null);
     setExito("Reclamacion enviada al administrador. Revisara el caso de forma imparcial y notificara a ambas partes.");
     rerender((n) => n + 1);

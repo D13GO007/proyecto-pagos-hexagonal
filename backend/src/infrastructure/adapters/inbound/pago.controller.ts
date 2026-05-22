@@ -1,12 +1,15 @@
 import { Controller, Post, Get, Param, Body, HttpException, HttpStatus, Inject } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import type { ICasoUsoPagoPort } from '../../../domain/puertos/caso-uso-pago.port';
 import { CASO_USO_PAGO_PORT } from '../../../domain/puertos/caso-uso-pago.port';
 import type { IPasarelaPagoPort } from '../../../domain/puertos/pasarela-pago.port';
 import { PASARELA_PAGO_PORT } from '../../../domain/puertos/pasarela-pago.port';
 import { EmailService } from '../outbound/email.service';
+import { CarritoWebhookService } from '../outbound/carrito-webhook.service';
 import { PagoRequestDto } from './dto/pago-request.dto';
 import { NotificarCambioEstadoDto } from './dto/notificar-cambio-estado.dto';
 
+@ApiTags('Pagos')
 @Controller('pagos')
 export class PagoController {
   constructor(
@@ -15,6 +18,7 @@ export class PagoController {
     @Inject(PASARELA_PAGO_PORT)
     private readonly pasarela: IPasarelaPagoPort,
     private readonly emailService: EmailService,
+    private readonly carritoWebhook: CarritoWebhookService,
   ) {}
 
   @Post()
@@ -52,6 +56,11 @@ export class PagoController {
         Promise.all([
           this.emailService.enviarConfirmacionComprador(datosMail),
           this.emailService.enviarNotificacionVendedor(datosMail),
+          this.carritoWebhook.notificarPagoConfirmado({
+            transaccionId: pedidoId,
+            monto: totalCobrado,
+            estado: 'APROBADA',
+          }),
         ]).catch(() => {});
       }
 

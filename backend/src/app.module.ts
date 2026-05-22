@@ -7,12 +7,15 @@ import { PagoController } from './infrastructure/adapters/inbound/pago.controlle
 import { CuponController } from './infrastructure/adapters/inbound/cupon.controller';
 import { DevolucionController } from './infrastructure/adapters/inbound/devolucion.controller';
 import { PedidoController } from './infrastructure/adapters/inbound/pedido.controller';
+import { CheckoutController } from './infrastructure/adapters/inbound/checkout.controller';
+import { HealthController } from './infrastructure/adapters/inbound/health.controller';
 import { ProcesarPagoUseCase } from './application/procesar-pago.usecase';
 import { GestionarCuponUseCase } from './application/gestionar-cupon.usecase';
 import { PedidosMockAdapter } from './infrastructure/adapters/outbound/pedidos-mock.adapter';
 import { WompiAdapter } from './infrastructure/adapters/outbound/wompi.adapter';
 import { CuponesMockAdapter } from './infrastructure/adapters/outbound/cupones-mock.adapter';
 import { EmailService } from './infrastructure/adapters/outbound/email.service';
+import { CarritoWebhookService } from './infrastructure/adapters/outbound/carrito-webhook.service';
 import { PEDIDOS_REPOSITORY_PORT } from './domain/puertos/pedidos-repository.port';
 import { PASARELA_PAGO_PORT } from './domain/puertos/pasarela-pago.port';
 import { CASO_USO_PAGO_PORT } from './domain/puertos/caso-uso-pago.port';
@@ -20,7 +23,7 @@ import { CUPON_REPOSITORY_PORT } from './domain/puertos/cupon-repository.port';
 
 @Module({
   imports: [],
-  controllers: [PagoController, CuponController, DevolucionController, PedidoController],
+  controllers: [PagoController, CuponController, DevolucionController, PedidoController, CheckoutController, HealthController],
   providers: [
     // Puerto de entrada: caso de uso de pago
     {
@@ -51,6 +54,9 @@ import { CUPON_REPOSITORY_PORT } from './domain/puertos/cupon-repository.port';
 
     // Adaptador de salida: servicio de notificaciones por correo
     EmailService,
+
+    // Adaptador de salida: notificación al carrito tras pago confirmado
+    CarritoWebhookService,
   ],
 })
 export class AppModule {}

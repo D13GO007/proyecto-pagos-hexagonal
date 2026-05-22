@@ -21,7 +21,8 @@ interface Cupon {
 }
 
 const KEY_LOCAL = "cupones_vendedor";
-const API = "http://localhost:4000/cupones";
+import { BACKEND_URL } from "@/lib/config";
+const API = `${BACKEND_URL}/cupones`;
 
 function cargarLocal(): Cupon[] {
   if (typeof window === "undefined") return [];

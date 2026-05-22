@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { BACKEND_URL } from "@/lib/config";
 import {
   obtenerSolicitudes, actualizarSolicitud, actualizarEstadoFactura,
   type SolicitudDevolucion,
@@ -42,7 +43,7 @@ export default function AdminReclamaciones() {
     }
     actualizarSolicitud(s.id, { estado: "RESUELTA_ADMIN", adminDecision: modal.decision, adminMotivo: modal.motivo.trim(), fechaAdminResolucion: new Date().toISOString() });
     setSolicitudes(obtenerSolicitudes());
-    fetch("http://localhost:4000/devoluciones/admin-resolver", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ solicitudId: s.id, facturaId: s.facturaId, pedidoId: s.pedidoId, emailComprador: s.emailComprador, monto: s.monto, tipo: s.tipo, decision: modal.decision, adminMotivo: modal.motivo.trim() }) }).catch(() => {});
+    fetch(`${BACKEND_URL}/devoluciones/admin-resolver`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ solicitudId: s.id, facturaId: s.facturaId, pedidoId: s.pedidoId, emailComprador: s.emailComprador, monto: s.monto, tipo: s.tipo, decision: modal.decision, adminMotivo: modal.motivo.trim() }) }).catch(() => {});
     setModal(null);
     mostrar(modal.decision === "APROBADA" ? "Solicitud aprobada. Se notifico a comprador y vendedor." : "Rechazo mantenido. Se notifico a comprador y vendedor.", "ok");
   };

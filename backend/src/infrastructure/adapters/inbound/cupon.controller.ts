@@ -5,9 +5,11 @@
 //       POST /cupones/aplicar  (marcar usado tras pago exitoso)
 
 import { Controller, Get, Post, Body } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { GestionarCuponUseCase } from '../../../application/gestionar-cupon.usecase';
 import { CrearCuponRequestDto, ValidarCuponDto, AplicarCuponDto } from './dto/cupon-request.dto';
 
+@ApiTags('Cupones')
 @Controller('cupones')
 export class CuponController {
   constructor(private readonly cuponUseCase: GestionarCuponUseCase) {}

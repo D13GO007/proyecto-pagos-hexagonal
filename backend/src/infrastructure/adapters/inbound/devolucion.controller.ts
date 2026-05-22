@@ -1,4 +1,5 @@
 import { Controller, Post, Body } from '@nestjs/common';
+import { ApiTags } from '@nestjs/swagger';
 import { EmailService } from '../outbound/email.service';
 import {
   CrearSolicitudDevolucionDto,
@@ -7,6 +8,7 @@ import {
   AdminDecisionDto,
 } from './dto/devolucion-request.dto';
 
+@ApiTags('Devoluciones')
 @Controller('devoluciones')
 export class DevolucionController {
   constructor(private readonly emailService: EmailService) {}

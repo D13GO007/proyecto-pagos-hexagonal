@@ -5,6 +5,7 @@ import { useSearchParams } from "next/navigation";
 import SuccessIcon from "@/components/icons/SuccessIcon";
 import ErrorIcon from "@/components/icons/ErrorIcon";
 import { guardarTransaccion, guardarFactura, type Factura } from "@/lib/transacciones";
+import { BACKEND_URL } from "@/lib/config";
 import { generarFacturaPDF } from "@/lib/generarFacturaPDF";
 
 const TASAS_IVA: Record<"GENERAL" | "REDUCIDO" | "EXENTO", number> = { GENERAL: 19, REDUCIDO: 5, EXENTO: 0 };
@@ -107,7 +108,7 @@ function PasarelaPago() {
   // Registrar el pedido en el backend al montar (si los params son válidos)
   useEffect(() => {
     if (!paramsValidos) return;
-    fetch("http://localhost:4000/pedidos", {
+    fetch("${BACKEND_URL}/pedidos", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ pedidoId, totalFinal: subtotalOriginal }),
@@ -169,7 +170,7 @@ function PasarelaPago() {
     setCuponError(null);
     setCuponCargando(true);
     try {
-      const res = await fetch("http://localhost:4000/cupones/validar", {
+      const res = await fetch("${BACKEND_URL}/cupones/validar", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ codigo: codigoCupon.trim().toUpperCase(), monto: totalReal, clienteEmail }),
@@ -231,7 +232,7 @@ function PasarelaPago() {
         return;
       }
       try {
-        const res  = await fetch(`http://localhost:4000/pagos/estado/${wompiTxId}`);
+        const res  = await fetch(`${BACKEND_URL}/pagos/estado/${wompiTxId}`);
         const data = await res.json();
         if (data.aprobado) {
           clearInterval(pollingRef.current!);
@@ -250,7 +251,7 @@ function PasarelaPago() {
   const verificarEstadoWompi = async () => {
     if (!wompiTxId) return alert("No se encontró el ID de transacción Wompi.");
     try {
-      const res  = await fetch(`http://localhost:4000/pagos/estado/${wompiTxId}`);
+      const res  = await fetch(`${BACKEND_URL}/pagos/estado/${wompiTxId}`);
       const data = await res.json();
       if (data.aprobado) {
         setEsperandoPse(false);
@@ -281,7 +282,7 @@ function PasarelaPago() {
         : metodoPago === "PSE"   ? { tipoPersona, bancoPse, documentoPse, email: clienteEmail }
         : { telefonoNequi, email: clienteEmail };
 
-      const respuesta = await fetch("http://localhost:4000/pagos", {
+      const respuesta = await fetch("${BACKEND_URL}/pagos", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

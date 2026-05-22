@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { BACKEND_URL } from "@/lib/config";
 import {
   obtenerSolicitudes, actualizarSolicitud, actualizarEstadoFactura,
   type SolicitudDevolucion,
@@ -66,7 +67,7 @@ export default function GestionDevoluciones() {
     });
     actualizarEstadoFactura(s.facturaId, nuevoEstadoFactura);
     setSolicitudes(obtenerSolicitudes());
-    fetch("http://localhost:4000/devoluciones/resolver", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ solicitudId: s.id, facturaId: s.facturaId, pedidoId: s.pedidoId, emailComprador: s.emailComprador, monto: s.monto, tipo: s.tipo, motivo: s.motivo, decision: "APROBADA", reembolsoId }) }).catch(() => {});
+    fetch("${BACKEND_URL}/devoluciones/resolver", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ solicitudId: s.id, facturaId: s.facturaId, pedidoId: s.pedidoId, emailComprador: s.emailComprador, monto: s.monto, tipo: s.tipo, motivo: s.motivo, decision: "APROBADA", reembolsoId }) }).catch(() => {});
     mostrar(`Solicitud aprobada. ID reembolso: ${reembolsoId}. Se notifico al cliente (${s.emailComprador}).`, "ok");
   };
 
@@ -82,7 +83,7 @@ export default function GestionDevoluciones() {
       : modalRechazo.razonPredefinida;
     actualizarSolicitud(s.id, { estado: "RECHAZADA", motivoRechazo: modalRechazo.razonPredefinida, detalleRechazo: modalRechazo.detalle.trim() || undefined, fechaResolucion: new Date().toISOString() });
     setSolicitudes(obtenerSolicitudes());
-    fetch("http://localhost:4000/devoluciones/resolver", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ solicitudId: s.id, facturaId: s.facturaId, pedidoId: s.pedidoId, emailComprador: s.emailComprador, monto: s.monto, tipo: s.tipo, motivo: s.motivo, decision: "RECHAZADA", motivoRechazo: motivoCompleto }) }).catch(() => {});
+    fetch("${BACKEND_URL}/devoluciones/resolver", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ solicitudId: s.id, facturaId: s.facturaId, pedidoId: s.pedidoId, emailComprador: s.emailComprador, monto: s.monto, tipo: s.tipo, motivo: s.motivo, decision: "RECHAZADA", motivoRechazo: motivoCompleto }) }).catch(() => {});
     setModalRechazo(null);
     mostrar("Solicitud rechazada. El cliente puede escalar al administrador si no esta de acuerdo.", "ok");
   };
